@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae1ba72f75cf554eade7de69895f619, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 3
+  radius: 5
   cellsize: 1
 --- !u!4 &883781845
 Transform:

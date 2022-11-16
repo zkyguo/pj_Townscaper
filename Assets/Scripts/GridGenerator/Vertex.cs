@@ -35,6 +35,20 @@ public class Vertex_hex : Vertex
             vertices.Add(new Vertex_hex(coord));
         }
     }
+
+    /// <summary>
+    /// find all vertex of ring of radius
+    /// </summary>
+    /// <param name="radius"></param>
+    /// <param name="vertices"></param>
+    /// <returns></returns>
+    public static List<Vertex_hex> GrabRing(int radius, List<Vertex_hex> vertices)
+    {
+        if (radius == 0) return vertices.GetRange(0, 1);
+        //all vertices = first vertices of ring + radius * 6
+        return vertices.GetRange(3 *(radius - 1) * radius  + 1, radius * 6);
+
+    }
 }
 
 public class Coord
