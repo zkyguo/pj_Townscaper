@@ -6,6 +6,7 @@ using UnityEngine;
 public class Edge 
 {
     public readonly HashSet<Vertex_hex> Hexes;
+    public Vertex_mid mid;
 
     /// <summary>
     /// Create an edge by two vertex a,b and add this to allEdge list
@@ -17,8 +18,12 @@ public class Edge
     {
         Hexes = new HashSet<Vertex_hex> { a,b};
         edges.Add(this);
+        
+    }
 
-
+    public void addMid(List<Vertex_mid> mids)
+    {
+        mid = new Vertex_mid(this, mids);
     }
 
     /// <summary>

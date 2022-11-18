@@ -20,6 +20,8 @@ public class Triangle
     public readonly Edge[] edges;
     public readonly Vertex_hex[] vertices;
 
+    public Vertex_triangleCenter center;
+
     public Triangle(Vertex_hex a, Vertex_hex b, Vertex_hex c, List<Edge> edges, List<Triangle> triangles)
     {
         this.a = a;
@@ -237,6 +239,29 @@ public class Triangle
 
         return false;
     }
+
+    /// <summary>
+    /// Add center point to triangle
+    /// </summary>
+    /// <param name="centers"></param>
+    public void AddCenterPoint(List<Vertex_center> centers)
+    {
+        center = new Vertex_triangleCenter(this);
+        centers.Add(center);
+    }
     
+    /// <summary>
+    /// Subdivise triangle
+    /// </summary>
+    /// <param name="subQuads"></param>
+    public void Subdivide(List<SubQuad> subQuads)
+    {
+        SubQuad quad_a = new SubQuad(a, ab.mid, center, ca.mid);
+        SubQuad quad_b = new SubQuad(b, bc.mid, center, ab.mid);
+        SubQuad quad_c = new SubQuad(c, ca.mid, center, bc.mid);
+        subQuads.Add(quad_a);
+        subQuads.Add(quad_b);
+        subQuads.Add(quad_c);
+    }
 }
 

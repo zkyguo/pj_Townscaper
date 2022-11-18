@@ -1,19 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
-/// 
+/// General vertex
 /// </summary>
-public class Vertex 
+public abstract class Vertex 
 {
-    
 
+    public Vector3 initialPosition;
 
 
 }
 
+/// <summary>
+/// Vertex of hex
+/// </summary>
 public class Vertex_hex : Vertex
 {
     public readonly Coord coord;
@@ -21,6 +25,7 @@ public class Vertex_hex : Vertex
     public Vertex_hex(Coord coord)
     {
         this.coord = coord;
+        initialPosition = coord.worldPosition;
     }
 
     /// <summary>
@@ -51,6 +56,44 @@ public class Vertex_hex : Vertex
     }
 }
 
+/// <summary>
+/// Vertex between two vertex_hex
+/// </summary>
+public class Vertex_mid : Vertex
+{
+    public Vertex_mid(Edge edge, List<Vertex_mid> mids )
+    {
+        Vertex_hex a = edge.Hexes.ToArray()[0];
+        Vertex_hex b = edge.Hexes.ToArray()[1];
+        mids.Add(this);
+        initialPosition = (a.coord.worldPosition + b.coord.worldPosition) / 2;
+    }
+}
+
+public abstract class Vertex_center : Vertex{}
+
+/// <summary>
+/// Center vertex of a triangle
+/// </summary>
+public class Vertex_triangleCenter : Vertex_center
+{
+    public Vertex_triangleCenter(Triangle triangle)
+    {
+        initialPosition = (triangle.a.initialPosition + triangle.b.initialPosition + triangle.c.initialPosition) / 3;
+    }
+}
+
+public class Vertex_quadCenter : Vertex_center
+{
+    public Vertex_quadCenter(Quad quad)
+    {
+        initialPosition = (quad.a.initialPosition + quad.b.initialPosition + quad.c.initialPosition + quad.d.initialPosition) / 4;
+    }
+}
+
+/// <summary>
+/// Coord system
+/// </summary>
 public class Coord
 {
     private readonly int q;
@@ -182,3 +225,4 @@ public class Coord
         return new Coord(q*factor,r*factor,s*factor);
     }
 }
+
