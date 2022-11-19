@@ -436,6 +436,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 5
   cellsize: 1
+  smoothTime: 120
+  showSmooth: 1
 --- !u!4 &883781845
 Transform:
   m_ObjectHideFlags: 0

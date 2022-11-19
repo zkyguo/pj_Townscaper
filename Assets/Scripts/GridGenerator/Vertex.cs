@@ -11,6 +11,18 @@ public abstract class Vertex
 {
 
     public Vector3 initialPosition;
+    public Vector3 currentPosition;
+    public Vector3 offset = new Vector3(0, 0, 0);
+
+    public Vertex()
+    {
+        
+    }
+
+    public void Smooth()
+    {
+        currentPosition = initialPosition + offset; 
+    }
 
 
 }
@@ -26,6 +38,7 @@ public class Vertex_hex : Vertex
     {
         this.coord = coord;
         initialPosition = coord.worldPosition;
+        currentPosition = initialPosition;
     }
 
     /// <summary>
@@ -67,6 +80,7 @@ public class Vertex_mid : Vertex
         Vertex_hex b = edge.Hexes.ToArray()[1];
         mids.Add(this);
         initialPosition = (a.coord.worldPosition + b.coord.worldPosition) / 2;
+        currentPosition = initialPosition;
     }
 }
 
@@ -80,6 +94,7 @@ public class Vertex_triangleCenter : Vertex_center
     public Vertex_triangleCenter(Triangle triangle)
     {
         initialPosition = (triangle.a.initialPosition + triangle.b.initialPosition + triangle.c.initialPosition) / 3;
+        currentPosition = initialPosition;
     }
 }
 
@@ -88,6 +103,7 @@ public class Vertex_quadCenter : Vertex_center
     public Vertex_quadCenter(Quad quad)
     {
         initialPosition = (quad.a.initialPosition + quad.b.initialPosition + quad.c.initialPosition + quad.d.initialPosition) / 4;
+        currentPosition = initialPosition;
     }
 }
 
