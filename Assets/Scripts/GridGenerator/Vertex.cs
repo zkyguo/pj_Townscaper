@@ -12,6 +12,7 @@ public abstract class Vertex
 
     public Vector3 initialPosition;
     public Vector3 currentPosition;
+    public List<Vertex_Y> verticesY = new List<Vertex_Y>();
     public Vector3 offset = new Vector3(0, 0, 0);
 
     public Vertex()
@@ -98,12 +99,33 @@ public class Vertex_triangleCenter : Vertex_center
     }
 }
 
+/// <summary>
+/// Center vertex of a quad
+/// </summary>
 public class Vertex_quadCenter : Vertex_center
 {
     public Vertex_quadCenter(Quad quad)
     {
         initialPosition = (quad.a.initialPosition + quad.b.initialPosition + quad.c.initialPosition + quad.d.initialPosition) / 4;
         currentPosition = initialPosition;
+    }
+}
+
+/// <summary>
+/// Vertex on Y axe
+/// </summary>
+public class Vertex_Y
+{
+    public readonly Vertex vertex;
+    public readonly int y;
+    public readonly Vector3 worldPosition;
+    public bool isActive = false;
+
+    public Vertex_Y(Vertex vertex, int y)
+    {
+        this.vertex = vertex;
+        this.y = y;
+        this.worldPosition = vertex.currentPosition + Vector3.up * (y * Grid.cellHeight);
     }
 }
 

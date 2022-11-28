@@ -12,41 +12,69 @@ public class GridGenerator : MonoBehaviour
     [SerializeField]
     private float cellsize;
     [SerializeField]
-    private int smoothTime;
+    private int smoothIteration;
+    [SerializeField]
+    public float cellHeight;
+    [SerializeField]
+    public int height;
     [SerializeField]
     private bool showSmooth;
+    [SerializeField]
+    private bool showVerticalVertices;
+    public Transform testSphere;
 
 
     private Grid grid;
     private void Awake()
     {
-        grid = new Grid(radius, cellsize, smoothTime);
+        grid = new Grid(radius, cellsize, smoothIteration, cellHeight, height);
     }
 
     private void Update()
     {
-        if(Time.frameCount % 120 == 0)
-            { return; }
-        if (smoothTime > 0 )
+        if(testSphere != null && grid != null)
         {
-            for (int i = 0; i < grid.subQuads.Count; i++)
+            foreach (Vertex vertex in grid.vertices)
             {
-                grid.subQuads[i].CalculateSmoothOffset();
+                foreach (Vertex_Y vertexY in vertex.verticesY)
+                {
+                    if(vertexY.isActive && Vector3.Distance(vertexY.worldPosition, testSphere.position) > 2f)
+                    {
+                        vertexY.isActive = false;
+                    }
+                    else if(!vertexY.isActive && Vector3.Distance(vertexY.worldPosition, testSphere.position) < 2f)
+                    {
+                        vertexY.isActive = true;    
+                    }
+                }
             }
-            for (int i = 0; i < grid.vertices.Count; i++)
-            {
-                grid.vertices[i].Smooth();
-            }
-            smoothTime -= 1;
         }
-        
-        
     }
 
     private void OnDrawGizmos()
     {
         if(grid != null)
         {
+            if(showVerticalVertices)
+            {              
+                foreach (Vertex vertex in grid.vertices)
+                {
+                    foreach(Vertex_Y vertexY in vertex.verticesY)
+                    {
+                        if (vertexY.isActive)
+                        {
+                            Gizmos.color = Color.red;
+                        }
+                        else
+                        {
+                            Gizmos.color = Color.grey;
+                        }
+                            
+                        Gizmos.DrawSphere(vertexY.worldPosition, 0.15f);
+                    }
+                }
+                return;
+            }
             if (!showSmooth)
             {
                 foreach (Vertex_hex vertex in grid.allHex)
@@ -87,6 +115,7 @@ public class GridGenerator : MonoBehaviour
                     Gizmos.DrawLine(sub.c.initialPosition, sub.d.initialPosition);
                     Gizmos.DrawLine(sub.d.initialPosition, sub.a.initialPosition);
                 }
+                return;
             }
             else
             {
@@ -128,6 +157,8 @@ public class GridGenerator : MonoBehaviour
                     Gizmos.DrawLine(sub.c.currentPosition, sub.d.currentPosition);
                     Gizmos.DrawLine(sub.d.currentPosition, sub.a.currentPosition);
                 }
+
+                return;
             }
             
         }

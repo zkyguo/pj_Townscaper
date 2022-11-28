@@ -8,6 +8,8 @@ public class Grid
     public static int radius;
     public static float cellSize;
     public static int smoothTime;
+    public static float cellHeight;
+    public static int height;
 
     public readonly List<Triangle> triangles = new List<Triangle>();
     public readonly List<Vertex_hex> allHex = new List<Vertex_hex>();
@@ -16,13 +18,15 @@ public class Grid
     public readonly List<Vertex> vertices = new List<Vertex>();
     public readonly List<Edge> edges = new List<Edge>();
     public readonly List<Quad> quads = new List<Quad>();
-    public readonly List<SubQuad> subQuads = new List<SubQuad>();
+    public readonly List<SubQuad> subQuads = new List<SubQuad>();  
 
-    public Grid(int radius, float cellSize, int smoothTime)
+    public Grid(int radius, float cellSize, int smoothTime, float cellheight, int height)
     {
         Grid.radius = radius;
         Grid.cellSize = cellSize;
         Grid.smoothTime = smoothTime;
+        Grid.cellHeight = cellheight;
+        Grid.height = height;
         Vertex_hex.Hex(allHex);
         Triangle.Triangles_Hex(allHex, edges, triangles);
 
@@ -35,7 +39,11 @@ public class Grid
         vertices.AddRange(mids);
         vertices.AddRange(centers);
 
-       
+        SmoothSubQuad(subQuads, vertices);
+
+        AddVerticesHeight(vertices);
+
+
     }
 
     private void AddMids(List<Vertex_mid> mids, List<Edge> edges)
@@ -77,9 +85,23 @@ public class Grid
                 vertices[i].Smooth();
             }
         }
+    }
 
-        
-
+    /// <summary>
+    /// Add all vertical vertices for each vertex on ground
+    /// </summary>
+    /// <param name="vertices"></param>
+    /// <param name="verticesY"></param>
+    public void AddVerticesHeight(List<Vertex> vertices)
+    {
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            for (int j = 0; j < Grid.height; j++)
+            {
+                vertices[i].verticesY.Add(new Vertex_Y(vertices[i], j));
+            }
+           
+        }
     }
     
 }
