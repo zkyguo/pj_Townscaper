@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
 using UnityEngine.UIElements;
@@ -21,6 +22,8 @@ public class GridGenerator : MonoBehaviour
     private bool showSmooth;
     [SerializeField]
     private bool showVerticalVertices;
+    [SerializeField]
+    private bool showVertices;
     public Transform testSphere;
 
 
@@ -38,16 +41,17 @@ public class GridGenerator : MonoBehaviour
             {
                 foreach (Vertex_Y vertexY in vertex.verticesY)
                 {
-                    if(vertexY.isActive && Vector3.Distance(vertexY.worldPosition, testSphere.position) > 2f)
+                    if(vertexY.isActive && Vector3.Distance(vertexY.worldPosition, testSphere.position) > 3f)
                     {
                         vertexY.isActive = false;
                     }
-                    else if(!vertexY.isActive && Vector3.Distance(vertexY.worldPosition, testSphere.position) < 2f)
+                    else if(!vertexY.isActive && Vector3.Distance(vertexY.worldPosition, testSphere.position) < 3f)
                     {
                         vertexY.isActive = true;    
                     }
                 }
             }
+            
         }
     }
 
@@ -55,7 +59,17 @@ public class GridGenerator : MonoBehaviour
     {
         if(grid != null)
         {
-            if(showVerticalVertices)
+            if (showVertices)
+            {
+                Gizmos.color = Color.blue;
+                foreach (Vertex vertex in grid.vertices)
+                {
+                    Gizmos.DrawSphere(vertex.currentPosition, 0.15f);
+                }
+
+                return;
+            }
+            if (showVerticalVertices)
             {              
                 foreach (Vertex vertex in grid.vertices)
                 {
@@ -71,6 +85,34 @@ public class GridGenerator : MonoBehaviour
                         }
                             
                         Gizmos.DrawSphere(vertexY.worldPosition, 0.15f);
+                    }
+                }
+                foreach (SubQuad subquad in grid.subQuads)
+                {
+                    foreach (SubQuad_Cube cube in subquad.cubes)
+                    {
+                        cube.UpdateBit();
+                        Gizmos.color = Color.gray;
+                        Gizmos.DrawLine(cube.vertexYs[0].worldPosition, cube.vertexYs[1].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[1].worldPosition, cube.vertexYs[2].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[2].worldPosition, cube.vertexYs[3].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[3].worldPosition, cube.vertexYs[0].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[4].worldPosition, cube.vertexYs[5].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[5].worldPosition, cube.vertexYs[6].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[6].worldPosition, cube.vertexYs[7].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[7].worldPosition, cube.vertexYs[4].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[0].worldPosition, cube.vertexYs[4].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[1].worldPosition, cube.vertexYs[5].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[2].worldPosition, cube.vertexYs[6].worldPosition);
+                        Gizmos.DrawLine(cube.vertexYs[3].worldPosition, cube.vertexYs[7].worldPosition);
+
+
+                        Gizmos.color = Color.blue;
+                        Gizmos.DrawSphere(cube.CenterPosition, 0.15f);
+
+                        GUI.color = Color.blue;
+                        Handles.Label(cube.CenterPosition, cube.bits);
+
                     }
                 }
                 return;
@@ -117,7 +159,7 @@ public class GridGenerator : MonoBehaviour
                 }
                 return;
             }
-            else
+            if(showSmooth)
             {
                 foreach (Vertex_hex vertex in grid.allHex)
                 {
@@ -160,6 +202,8 @@ public class GridGenerator : MonoBehaviour
 
                 return;
             }
+ 
+
             
         }
         

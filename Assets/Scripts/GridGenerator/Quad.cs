@@ -36,7 +36,8 @@ public class Quad
     /// <param name="centers"></param>
     public void AddCenter(List<Vertex_center> centers)
     {
-        centers.Add(new Vertex_quadCenter(this));
+        center = new Vertex_quadCenter(this);
+        centers.Add(center);
     }
 
     /// <summary>

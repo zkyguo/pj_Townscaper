@@ -434,13 +434,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae1ba72f75cf554eade7de69895f619, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 5
+  radius: 1
   cellsize: 1
   smoothIteration: 120
   cellHeight: 1
   height: 5
   showSmooth: 0
   showVerticalVertices: 1
+  showVertices: 0
+  testSphere: {fileID: 885196207}
 --- !u!4 &883781845
 Transform:
   m_ObjectHideFlags: 0

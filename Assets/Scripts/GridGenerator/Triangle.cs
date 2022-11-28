@@ -179,7 +179,7 @@ public class Triangle
     /// <param name="edges"> all edge in grid</param>
     /// <param name="triangles"> all triangle in grid</param>
     /// <param name="quads"> all quad in grid</param>
-    public void MergeNeighborTriangle(Triangle neighbor, List<Edge> edges, List<Triangle> triangles, List<Quad> quads)
+    public void MergeNeighborTriangle(Triangle neighbor, List<Edge> edges, List<Triangle> triangles, List<Quad> quads, List<Vertex_mid> mids)
     {
         // Find the no common vertex of this triangles
         Vertex_hex a = NoCommonVertex_Self(neighbor);
@@ -194,6 +194,7 @@ public class Triangle
 
         //Remove both triangle and edges 
         edges.Remove(NeighborEdge(neighbor));
+        mids.Remove(NeighborEdge(neighbor).mid);
         triangles.Remove(this);
         triangles.Remove(neighbor);
     }
@@ -204,8 +205,9 @@ public class Triangle
     /// <param name="edges"></param>
     /// <param name="triangles"></param>
     /// <param name="quads"></param>
-    public static bool RandomlyMergeTriangles(List<Edge> edges, List<Triangle> triangles, List<Quad> quads)
+    public static bool RandomlyMergeTriangles(List<Edge> edges, List<Triangle> triangles, List<Quad> quads,List<Vertex_mid> mids)
     {
+        if (triangles.Count == 0) return false;
         //Pick a random triangle
         int randomIndex = UnityEngine.Random.Range(0, triangles.Count);
         Triangle randomTriangle = triangles[randomIndex];
@@ -217,7 +219,7 @@ public class Triangle
         {
             //Pick a random neighbor
             int randomNeighborIndex = UnityEngine.Random.Range(0, neighbors.Count);
-            randomTriangle.MergeNeighborTriangle(neighbors[randomNeighborIndex], edges, triangles, quads);
+            randomTriangle.MergeNeighborTriangle(neighbors[randomNeighborIndex], edges, triangles, quads, mids);
             return true;
         }
 

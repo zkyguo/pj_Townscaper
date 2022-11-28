@@ -30,7 +30,7 @@ public class Grid
         Vertex_hex.Hex(allHex);
         Triangle.Triangles_Hex(allHex, edges, triangles);
 
-        while (Triangle.RandomlyMergeTriangles(edges, triangles, quads));
+        while (Triangle.RandomlyMergeTriangles(edges, triangles, quads, mids));
 
         AddMids(mids, edges);
         addCenterAndSubdivise(centers, triangles, quads, subQuads);
@@ -42,8 +42,7 @@ public class Grid
         SmoothSubQuad(subQuads, vertices);
 
         AddVerticesHeight(vertices);
-
-
+        AddSubQuadCubes(subQuads);
     }
 
     private void AddMids(List<Vertex_mid> mids, List<Edge> edges)
@@ -87,20 +86,49 @@ public class Grid
         }
     }
 
-    /// <summary>
-    /// Add all vertical vertices for each vertex on ground
-    /// </summary>
-    /// <param name="vertices"></param>
-    /// <param name="verticesY"></param>
     public void AddVerticesHeight(List<Vertex> vertices)
     {
         for (int i = 0; i < vertices.Count; i++)
         {
-            for (int j = 0; j < Grid.height; j++)
+            for (int j = 0; j < Grid.height + 1; j++)
             {
-                vertices[i].verticesY.Add(new Vertex_Y(vertices[i], j));
+                var vertex = vertices[i] as Vertex;
+                vertex.verticesY.Add(new Vertex_Y(vertex, j));
+
             }
            
+        }
+    }
+
+    public void AddSubQuadCubes(List<SubQuad> subQuads)
+    {
+        for (int i = 0; i < subQuads.Count; i++)
+        {
+            for (int j = 0; j < Grid.height; j++)
+            {
+                SubQuad subquad = subQuads[i];
+                subquad.cubes.Add(new SubQuad_Cube(subquad, j));
+            }
+        }
+    }
+
+    public void check(List<SubQuad> subQuads, List<Vertex> vertices)
+    {
+        for (int i = 0; i < subQuads.Count; i++)
+        {
+            int found = 0;
+            for (int j = 0; j < vertices.Count; j++)
+            {
+                if (subQuads[i].a.Equals(vertices[j]) || subQuads[i].b.Equals(vertices[j]) || subQuads[i].c.Equals(vertices[j]) || subQuads[i].d.Equals(vertices[j]))
+                {
+                    found++;
+                }
+            }
+            if (found < 4)
+            {
+                Debug.Log("wrong");
+            }
+
         }
     }
     
