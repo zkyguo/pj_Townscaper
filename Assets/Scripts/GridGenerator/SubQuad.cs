@@ -25,7 +25,7 @@ public class SubQuad
     public void CalculateSmoothOffset()
     {
         //Find the center of relax
-        Vector3 center = (a.currentPosition + b.currentPosition + c.currentPosition + d.currentPosition) / 4;
+        Vector3 center = GetCenterPosition();
         CenterPosition = center;
 
         //We want to have a square which 4 edge are equals, so we have to find the vector with average length of all vector(vertex to center)
@@ -43,6 +43,11 @@ public class SubQuad
         b.offset += (vector_b - b.currentPosition) * 0.1f;
         c.offset += (vector_c - c.currentPosition) * 0.1f;
         d.offset += (vector_d - d.currentPosition) * 0.1f;
+    }
+
+    public Vector3 GetCenterPosition()
+    {
+        return (a.currentPosition + b.currentPosition + c.currentPosition + d.currentPosition) / 4;
     }
 }
 
