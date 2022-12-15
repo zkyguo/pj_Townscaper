@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -24,6 +25,11 @@ public class GridGenerator : MonoBehaviour
     private bool showVerticalVertices;
     [SerializeField]
     private bool showVertices;
+    [SerializeField]
+    ModuleLibrary moduleLibrary;
+    [SerializeField]
+    Material moduleMaterial;
+
     public Transform testSphere;
 
 
@@ -31,6 +37,7 @@ public class GridGenerator : MonoBehaviour
     private void Awake()
     {
         grid = new Grid(radius, cellsize, smoothIteration, cellHeight, height);
+        moduleLibrary = Instantiate(moduleLibrary);
     }
 
     private void Update()
@@ -45,9 +52,21 @@ public class GridGenerator : MonoBehaviour
                     {
                         vertexY.isActive = false;
                     }
-                    else if(!vertexY.isActive && Vector3.Distance(vertexY.worldPosition, testSphere.position) < 3f)
+                    else if(!vertexY.isActive && Vector3.Distance(vertexY.worldPosition, testSphere.position) < 3f && !vertexY.isBoundary)
                     {
                         vertexY.isActive = true;    
+                    }
+                }
+                //Initialize each slot of cube
+                foreach (SubQuad subquad in grid.subQuads)
+                {
+                    foreach (SubQuad_Cube cube in subquad.cubes)
+                    {
+                        cube.UpdateBit();
+                        if(cube.LastBits != cube.Currentbits)
+                        {
+                            UpdateSlot(cube);
+                        }
                     }
                 }
             }
@@ -55,6 +74,45 @@ public class GridGenerator : MonoBehaviour
         }
     }
 
+    private void UpdateSlot(SubQuad_Cube subQuad_Cube)
+    {
+        string name = "Slot_" + grid.subQuads.IndexOf(subQuad_Cube.subQuad) + "_" + subQuad_Cube.y;
+        GameObject slot_gameobject = null;
+        //if slot has an gameobject
+        if(transform.Find(name))
+        {
+            slot_gameobject = transform.Find(name).gameObject;
+        }
+        //if not, create one
+        if(slot_gameobject == null)
+        {
+            if(subQuad_Cube.Currentbits != "00000000" && subQuad_Cube.Currentbits != "11111111")
+            {
+                slot_gameobject = new GameObject(name, typeof(Slot));
+                slot_gameobject.transform.parent = transform;
+                slot_gameobject.transform.localPosition = subQuad_Cube.CenterPosition;
+                Slot slot = slot_gameobject.GetComponent<Slot>();
+                slot.Initialized(moduleLibrary, subQuad_Cube, moduleMaterial);
+                slot.UpdateModule(slot.possibleModules[0]);
+            }
+            
+        }
+        else
+        {
+            Slot slot = slot_gameobject.GetComponent<Slot>();
+            //if current bit is void 
+            if(subQuad_Cube.Currentbits.Equals("00000000") || subQuad_Cube.Currentbits.Equals("11111111"))
+            {
+                Destroy(slot_gameobject);
+                Resources.UnloadUnusedAssets();
+            }
+            else
+            {
+                slot.ResetPossibleModules(moduleLibrary);
+                slot.UpdateModule(slot.possibleModules[0]);
+            }
+        }
+    }
     private void OnDrawGizmos()
     {
         if(grid != null)
@@ -71,7 +129,7 @@ public class GridGenerator : MonoBehaviour
             }
             if (showVerticalVertices)
             {              
-                foreach (Vertex vertex in grid.vertices)
+                /*foreach (Vertex vertex in grid.vertices)
                 {
                     foreach(Vertex_Y vertexY in vertex.verticesY)
                     {
@@ -86,7 +144,7 @@ public class GridGenerator : MonoBehaviour
                             
                         Gizmos.DrawSphere(vertexY.worldPosition, 0.15f);
                     }
-                }
+                }*/
                 foreach (SubQuad subquad in grid.subQuads)
                 {
                     foreach (SubQuad_Cube cube in subquad.cubes)
@@ -107,11 +165,11 @@ public class GridGenerator : MonoBehaviour
                         Gizmos.DrawLine(cube.vertexYs[3].worldPosition, cube.vertexYs[7].worldPosition);
 
 
-                        Gizmos.color = Color.blue;
+                        /*Gizmos.color = Color.blue;
                         Gizmos.DrawSphere(cube.CenterPosition, 0.15f);
 
                         GUI.color = Color.blue;
-                        Handles.Label(cube.CenterPosition, cube.bits);
+                        Handles.Label(cube.CenterPosition, cube.Currentbits);*/
 
                     }
                 }

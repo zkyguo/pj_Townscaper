@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 using UnityEngine.XR;
 
 [CreateAssetMenu(menuName ="ScriptableObject/ModuleLibrary")]
@@ -11,7 +13,12 @@ public class ModuleLibrary : ScriptableObject
 {
     [SerializeField]
     private GameObject importedModules;
-    private Dictionary<string, List<Module>> moduleLibrary = new Dictionary<string, List<Module>>();    
+    private Dictionary<string, List<Module>> moduleLibrary = new Dictionary<string, List<Module>>();
+
+    private void Awake()
+    {
+        ImportedModule();
+    }
 
     public void ImportedModule()
     {
@@ -32,6 +39,13 @@ public class ModuleLibrary : ScriptableObject
                 {
                     moduleLibrary[rotateName(name,2)].Add(new Module(rotateName(name, 2), mesh, 2, false));
                     moduleLibrary[rotateName(name,3)].Add(new Module(rotateName(name, 3), mesh, 3, false));
+                    if(!SymetricEqualCheck(name))
+                    {
+                        moduleLibrary[flipName(name)].Add(new Module(flipName(name), mesh, 0, true));
+                        moduleLibrary[rotateName(flipName(name), 1)].Add(new Module(rotateName(flipName(name), 1), mesh, 1, true));
+                        moduleLibrary[rotateName(flipName(name), 2)].Add(new Module(rotateName(flipName(name), 2), mesh, 2, true));
+                        moduleLibrary[rotateName(flipName(name), 3)].Add(new Module(rotateName(flipName(name), 3), mesh, 3, true));
+                    }
                 }
             }
         }
@@ -58,6 +72,10 @@ public class ModuleLibrary : ScriptableObject
         return result;
     }
         
+    private string flipName(string name)
+    {
+        return name[3].ToString() + name[2] + name[1] + name[0] + name[7] + name[6] + name[5] + name[4]; 
+    }
 
     /// <summary>
     /// Check if module is equal to himself after rotate 90 degree
@@ -93,6 +111,6 @@ public class ModuleLibrary : ScriptableObject
         string sysmmetric_diagonalUp = name[0].ToString() + name[3] + name[2] + name[1] + name[4] + name[7] + name[6] + name[5];
         string sysmmetric_diagonaDown = name[2].ToString() + name[1] + name[0] + name[3] + name[6] + name[5] + name[4] + name[7];
 
-        return name == sysmmetric_vertical || name == sysmmetric_vertical || name == sysmmetric_diagonalUp || name == sysmmetric_diagonaDown;
+        return name == sysmmetric_vertical || name == sysmmetric_horizontal || name == sysmmetric_diagonalUp || name == sysmmetric_diagonaDown;
     }
 }

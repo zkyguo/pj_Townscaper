@@ -434,14 +434,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae1ba72f75cf554eade7de69895f619, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 1
+  radius: 3
   cellsize: 1
   smoothIteration: 120
   cellHeight: 1
-  height: 5
+  height: 2
   showSmooth: 0
   showVerticalVertices: 1
   showVertices: 0
+  moduleLibrary: {fileID: 11400000, guid: f3e8897057c101e4aafd092349960e5b, type: 2}
+  moduleMaterial: {fileID: 2100000, guid: 968f3618df2f2954f8e884882b4f9c4f, type: 2}
   testSphere: {fileID: 885196207}
 --- !u!4 &883781845
 Transform:

@@ -13,17 +13,25 @@ public abstract class Vertex
     public Vector3 initialPosition;
     public Vector3 currentPosition;
     public List<Vertex_Y> verticesY = new List<Vertex_Y>();
+    public bool isBoundary;
     public Vector3 offset = new Vector3(0, 0, 0);
-
-    public Vertex()
-    {
-        
-    }
 
     public void Smooth()
     {
         currentPosition = initialPosition + offset; 
     }
+
+    public void BoundaryCheck()
+    {
+        //Check if Hex is on boundary
+        bool isBoundaryHex = this is Vertex_hex && ((Vertex_hex)this).coord.radius == Grid.radius;
+        //Check if Mid is on boundary
+        bool isBoundaryMid = this is Vertex_mid && ((Vertex_mid)this).edge.Hexes.ToArray()[0].coord.radius == Grid.radius && ((Vertex_mid)this).edge.Hexes.ToArray()[1].coord.radius == Grid.radius;
+
+        isBoundary = isBoundaryHex || isBoundaryMid;
+    }
+
+
 
 
 }
@@ -75,8 +83,10 @@ public class Vertex_hex : Vertex
 /// </summary>
 public class Vertex_mid : Vertex
 {
+    public readonly Edge edge;
     public Vertex_mid(Edge edge, List<Vertex_mid> mids )
     {
+        this.edge = edge;
         Vertex_hex a = edge.Hexes.ToArray()[0];
         Vertex_hex b = edge.Hexes.ToArray()[1];
         mids.Add(this);
@@ -120,12 +130,14 @@ public class Vertex_Y
     public readonly int y;
     public readonly Vector3 worldPosition;
     public bool isActive = false;
-
+    public readonly bool isBoundary;
     public Vertex_Y(Vertex vertex, int y)
     {
         this.vertex = vertex;
         this.y = y;
         this.worldPosition = vertex.currentPosition + Vector3.up * (y * Grid.cellHeight);
+
+        isBoundary = vertex.isBoundary || y == Grid.height || y == 0 ;
     }
 }
 
@@ -137,13 +149,14 @@ public class Coord
     private readonly int q;
     private readonly int r;
     private readonly int s;
-
+    public readonly int radius;
     public readonly Vector3 worldPosition;
     public Coord(int q, int r, int s)
     {
         this.q = q;
         this.r = r;
         this.s = s;
+        this.radius = Mathf.Max(Mathf.Abs(q), Mathf.Abs(r),Mathf.Abs(s));
         worldPosition = ToWorldPosition();
     }
 

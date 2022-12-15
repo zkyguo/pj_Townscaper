@@ -1,11 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 /// <summary>
 /// Class which contains basic data of an module
 /// </summary>
-public class Module
+[Serializable]
+public class Module 
 {
     public string name;
     public Mesh mesh;

@@ -88,11 +88,13 @@ public class Grid
 
     public void AddVerticesHeight(List<Vertex> vertices)
     {
+        
         for (int i = 0; i < vertices.Count; i++)
         {
+            var vertex = vertices[i] as Vertex;
+            vertex.BoundaryCheck();
             for (int j = 0; j < Grid.height + 1; j++)
-            {
-                var vertex = vertices[i] as Vertex;
+            {             
                 vertex.verticesY.Add(new Vertex_Y(vertex, j));
 
             }

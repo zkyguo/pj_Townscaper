@@ -59,8 +59,9 @@ public class SubQuad_Cube
     public readonly SubQuad subQuad;
     public readonly int y;
     public readonly Vertex_Y[] vertexYs = new Vertex_Y[8];
-    public string bits = "00000000";
+    public string Currentbits = "00000000";
     public Vector3 CenterPosition;
+    public string LastBits = "00000000";
     public SubQuad_Cube(SubQuad subQuad, int y)
     {
         this.subQuad = subQuad;
@@ -83,6 +84,7 @@ public class SubQuad_Cube
 
     public void UpdateBit()
     {
+        LastBits = Currentbits;
         string result = "";
         if (vertexYs[0].isActive) result += "1";
         else result += "0";
@@ -101,7 +103,7 @@ public class SubQuad_Cube
         if (vertexYs[7].isActive) result += "1";
         else result += "0";
 
-        bits = result;
+        Currentbits = result;
 
     }
 }

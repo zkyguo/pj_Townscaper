@@ -9,6 +9,7 @@ using UnityEngine;
 /// </summary>
 public class Slot : MonoBehaviour
 {
+    [SerializeField]
     public List<Module> possibleModules;
     public SubQuad_Cube subQuad_Cube;
     public GameObject module;
@@ -19,7 +20,7 @@ public class Slot : MonoBehaviour
     {
         module = new GameObject("Module", typeof(MeshFilter), typeof(MeshRenderer));
         module.transform.SetParent(transform);
-        module.transform.localScale = Vector3.zero;
+        module.transform.localScale = Vector3.one;
 
     }
 
@@ -33,7 +34,7 @@ public class Slot : MonoBehaviour
 
     public void ResetPossibleModules(ModuleLibrary moduleLibrary)
     {
-        possibleModules = moduleLibrary.getModules(subQuad_Cube.bits);
+        possibleModules = moduleLibrary.getModules(subQuad_Cube.Currentbits);
     }
 
     public void UpdateModule(Module module)
